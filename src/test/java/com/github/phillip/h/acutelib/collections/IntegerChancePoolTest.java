@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -144,6 +145,22 @@ public class IntegerChancePoolTest {
         }
 
         assertThrows(NoSuchElementException.class, () -> pool.drawWithPredicate(s -> false));
+    }
+
+    @Test
+    @DisplayName("tryDraw() is correct")
+    public void tryDrawCorrect() {
+        final IntegerChancePool<String> pool = new IntegerChancePool<>();
+        assertThat(pool.tryDraw(), is(Optional.empty()));
+
+        pool.add("foo", 1);
+        assertThat(pool.tryDraw(), is(Optional.of("foo")));
+
+        assertThat(pool.tryDrawWithPredicate(s -> s.startsWith("b")), is(Optional.empty()));
+
+        pool.add("bar", 1);
+        assertThat(pool.tryDrawWithPredicate(s -> s.startsWith("b")), is(Optional.of("bar")));
+
     }
 
 }

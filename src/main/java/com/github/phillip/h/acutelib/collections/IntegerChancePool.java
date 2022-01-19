@@ -2,10 +2,7 @@ package com.github.phillip.h.acutelib.collections;
 
 import com.github.phillip.h.acutelib.util.Checks;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -145,6 +142,16 @@ public class IntegerChancePool<T> {
     }
 
     /**
+     * Try to draw an element. If the pool is empty, and empty optional
+     * is returned, otherwise the drawn element is returned.
+     *
+     * @return The drawn element, or empty if the pool is empty
+     */
+    public Optional<T> tryDraw() {
+        return elements.isEmpty() ? Optional.empty() : Optional.of(draw());
+    }
+
+    /**
      * Draw an element from the subset of elements matching the predicate.
      * This is equivalent to filter(predicate).draw().
      *
@@ -153,6 +160,16 @@ public class IntegerChancePool<T> {
      */
     public T drawWithPredicate(Predicate<T> predicate) {
         return filter(predicate).draw();
+    }
+
+    /**
+     * Try to draw an element from the subset of elements matching the predicate.
+     * This is equivalent to filter(predicate).tryDraw().
+     *
+     * @return The drawn element, or empty if the pool is empty
+     */
+    public Optional<T> tryDrawWithPredicate(Predicate<T> predicate) {
+        return filter(predicate).tryDraw();
     }
 
     /**
