@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -265,5 +266,36 @@ public final class Util {
             return Collections.singletonList(sender.getServer().getPlayerExact(selector));
         }
         return Collections.emptyList();
+    }
+
+
+    // Can be replaced with builtin in java 9+
+    /**
+     * Convert an Optional to a stream. An empty Optional results in an
+     * empty stream, a present Optional results in a singleton stream.
+     *
+     * @param optional the Optional to convert to a stream
+     * @param <T> type of the Optional
+     * @return the Optional as a stream
+     */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static <T> Stream<T> stream(Optional<T> optional) {
+        Objects.requireNonNull(optional, "Null Optional<> (why???)");
+        return optional.map(Stream::of).orElse(Stream.empty());
+    }
+
+    /**
+     * Map over the values of a Map.
+     *
+     * @param map the map to map over
+     * @param mapper the mapper function
+     * @param <K> the key type
+     * @param <V> the value type
+     * @param <W> the resulting value type
+     * @return the map with its values mapped
+     */
+    public static <K, V, W> Map<K, W> mapMap(final Map<K, V> map, Function<V, W> mapper) {
+        Objects.requireNonNull(mapper);
+        return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> mapper.apply(e.getValue())));
     }
 }

@@ -1,15 +1,21 @@
 package com.github.phillip.h.acutelib.util;
 
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UtilTest {
@@ -72,6 +78,33 @@ public class UtilTest {
             put("[item]", "Sorcerous Blade of Desires");
         }};
         MatcherAssert.assertThat(Util.substituteVariables("[title][killed] was slain by [killer] using [item]", manyVarsMap), is(manyVars));
+    }
+
+    @Test
+    @DisplayName("stream() correct")
+    public void optionalStreamCorrect() {
+        //noinspection OptionalAssignedToNull
+        assertThrows(NullPointerException.class, () -> Util.stream(null));
+        assertThat(Util.stream(Optional.empty()).count(), is(0L));
+        assertThat(Util.stream(Optional.of("hello")).collect(Collectors.toList()), contains("hello"));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Test
+    @DisplayName("mapMap() correct")
+    public void mapMapCorrect() {
+        final Map<String, String> testMap = new HashMap<>();
+        testMap.put("foo", "bar");
+        testMap.put("hello", "world");
+
+        assertThrows(NullPointerException.class, () -> Util.mapMap(null, null));
+        assertThrows(NullPointerException.class, () -> Util.mapMap(null, x -> x));
+        assertThrows(NullPointerException.class, () -> Util.mapMap(testMap, null));
+
+        assertThat(Util.mapMap(testMap, x -> x), is(testMap));
+
+        final Map<String, Integer> lengthMap = Util.mapMap(testMap, String::length);
+        assertThat(lengthMap.values(), containsInAnyOrder(3, 5));
     }
 
 }
