@@ -1,6 +1,7 @@
 package com.github.phillip.h.acutelib.decorators;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
@@ -43,6 +44,18 @@ public class MetaEditor {
      */
     public MetaEditor setLore(final List<String> lore) {
         metaInternal.setLore(lore);
+        item.setItemMeta(metaInternal);
+        return this;
+    }
+
+    /**
+     * Set the item's damage.
+     *
+     * @param damage the item's damage
+     * @return this MetaEditor
+     */
+    public MetaEditor setDamage(final int damage) {
+        ((Damageable) metaInternal).setDamage(damage);
         item.setItemMeta(metaInternal);
         return this;
     }
